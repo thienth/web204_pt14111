@@ -35,8 +35,6 @@ $allCatesQuery = "  select
                             where p.cate_id = c.id) as total_product
                     from categories c";
 $cateList = executeQuery($allCatesQuery, true);
-// var_dump($cateList);die;
-
 ?>
 <!doctype html>
 <html class="no-js" lang="zxx">
@@ -249,7 +247,7 @@ $cateList = executeQuery($allCatesQuery, true);
                                                 </a>
                                                 <ul>
                                                     <li>
-                                                        <a href="product-details.html">
+                                                        <a href="<?= BASE_URL . "chi-tiet/san-pham.php?id=" . $p['id'] ?>">
                                                             <span class="mm-text">Simple 01</span>
                                                         </a>
                                                     </li>
@@ -773,7 +771,7 @@ $cateList = executeQuery($allCatesQuery, true);
                                             </a>
                                             <ul class="dl-submenu">
                                                 <li>
-                                                    <a href="product-details.html">
+                                                    <a href="javascript:;">
                                                         <span class="mm-text">Simple 01</span>
                                                     </a>
                                                 </li>
@@ -1050,7 +1048,7 @@ $cateList = executeQuery($allCatesQuery, true);
                                                 <div class="product-inner">
                                                     <figure class="product-image">
                                                         <div class="product-image--holder">
-                                                            <a href="product-details.html">
+                                                            <a href="<?= BASE_URL . "chi-tiet/san-pham.php?id=" . $p['id'] ?>">
                                                                 <img src="<?= $p['image']?>" alt="Product Image" class="primary-image">
                                                                 <img src="<?= $p['image2']?>" alt="Product Image" class="secondary-image">
                                                             </a>
@@ -1077,7 +1075,7 @@ $cateList = executeQuery($allCatesQuery, true);
                                                     </figure>
                                                     <div class="product-info">
                                                         <h3 class="product-title">
-                                                            <a href="product-details.html"><?= $p['name']?></a>
+                                                            <a href="<?= BASE_URL . "chi-tiet/san-pham.php?id=" . $p['id'] ?>"><?= $p['name']?></a>
                                                         </h3>
                                                         <div class="product-rating">
                                                             <span>
@@ -1343,7 +1341,7 @@ $cateList = executeQuery($allCatesQuery, true);
                                     <img src="assets/img/products/prod-17-1-70x91.jpg" alt="products">
                                 </div>
                                 <div class="mini-cart__product__content">
-                                    <a class="mini-cart__product__title" href="product-details.html">Chain print bermuda shorts  </a>
+                                    <a class="mini-cart__product__title" href="<?= BASE_URL . "chi-tiet/san-pham.php?id=" . $p['id'] ?>">Chain print bermuda shorts  </a>
                                     <span class="mini-cart__product__quantity">1 x $49.00</span>
                                 </div>
                             </li>
@@ -1355,7 +1353,7 @@ $cateList = executeQuery($allCatesQuery, true);
                                     <img src="assets/img/products/prod-18-1-70x91.jpg" alt="products">
                                 </div>
                                 <div class="mini-cart__product__content">
-                                    <a class="mini-cart__product__title" href="product-details.html">Waxed-effect pleated skirt</a>
+                                    <a class="mini-cart__product__title" href="<?= BASE_URL . "chi-tiet/san-pham.php?id=" . $p['id'] ?>">Waxed-effect pleated skirt</a>
                                     <span class="mini-cart__product__quantity">1 x $49.00</span>
                                 </div>
                             </li>
@@ -1367,7 +1365,7 @@ $cateList = executeQuery($allCatesQuery, true);
                                     <img src="assets/img/products/prod-19-1-70x91.jpg" alt="products">
                                 </div>
                                 <div class="mini-cart__product__content">
-                                    <a class="mini-cart__product__title" href="product-details.html">Waxed-effect pleated skirt</a>
+                                    <a class="mini-cart__product__title" href="<?= BASE_URL . "chi-tiet/san-pham.php?id=" . $p['id'] ?>">Waxed-effect pleated skirt</a>
                                     <span class="mini-cart__product__quantity">1 x $49.00</span>
                                 </div>
                             </li>
@@ -1379,7 +1377,7 @@ $cateList = executeQuery($allCatesQuery, true);
                                     <img src="assets/img/products/prod-2-1-70x91.jpg" alt="products">
                                 </div>
                                 <div class="mini-cart__product__content">
-                                    <a class="mini-cart__product__title" href="product-details.html">Waxed-effect pleated skirt</a>
+                                    <a class="mini-cart__product__title" href="<?= BASE_URL . "chi-tiet/san-pham.php?id=" . $p['id'] ?>">Waxed-effect pleated skirt</a>
                                     <span class="mini-cart__product__quantity">1 x $49.00</span>
                                 </div>
                             </li>
@@ -1415,7 +1413,7 @@ $cateList = executeQuery($allCatesQuery, true);
                         <div class="product-image-carousel nav-vertical-center nav-style-1">
                             <div class="product-image">
                                 <div class="product-image--holder">
-                                    <a href="product-details.html">
+                                    <a href="<?= BASE_URL . "chi-tiet/san-pham.php?id=" . $p['id'] ?>">
                                         <img src="assets/img/products/prod-9-1.jpg" alt="Product Image" class="primary-image">
                                     </a>
                                 </div>
@@ -1423,7 +1421,7 @@ $cateList = executeQuery($allCatesQuery, true);
                             </div>
                             <div class="product-image">
                                 <div class="product-image--holder">
-                                    <a href="product-details.html">
+                                    <a href="<?= BASE_URL . "chi-tiet/san-pham.php?id=" . $p['id'] ?>">
                                         <img src="assets/img/products/prod-10-1.jpg" alt="Product Image" class="primary-image">
                                     </a>
                                 </div>
@@ -1431,7 +1429,7 @@ $cateList = executeQuery($allCatesQuery, true);
                             </div>
                             <div class="product-image">
                                 <div class="product-image--holder">
-                                    <a href="product-details.html">
+                                    <a href="<?= BASE_URL . "chi-tiet/san-pham.php?id=" . $p['id'] ?>">
                                         <img src="assets/img/products/prod-11-1.jpg" alt="Product Image" class="primary-image">
                                     </a>
                                 </div>

@@ -1,14 +1,43 @@
-<?php require_once "./helpers/common.php" ?>
+<?php
+require_once "../helpers/common.php";
+require_once "../helpers/db.php";
+$proId = $_GET['id'];
+// chi tiết sản phẩm
+$productQuery = "   select 
+                            p.*,
+                            c.name as cate_name 
+                    from products p
+                    join categories c
+                    on p.cate_id = c.id 
+                    where p.id = $proId";
+$product = executeQuery($productQuery, false);
+// var_dump($product['cate_name']);die;
+// galleries của sản phẩm
+$galleryQuery = "select * from product_galleries where pro_id =  $proId";
+$galleries = executeQuery($galleryQuery, true);
+
+// comment cua san pham
+$commentQuery = "select * from comments where pro_id = $proId";
+$comments = executeQuery($commentQuery, true);
+
+// relate products
+$relateQuery = "select * from products where cate_id = " . $product['cate_id'] 
+                    . " and id <> $proId limit 4";
+$relates = executeQuery($relateQuery, true);
+// var_dump($relates);die;
+
+?>
 <!doctype html>
 <html class="no-js" lang="zxx">
- 
 
-<!-- Mirrored from demo.hasthemes.com/airi-v6/airi/index-02.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 03 Jan 2019 12:09:00 GMT -->
+
+<!-- Mirrored from demo.hasthemes.com/airi-v6/airi/product-details.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 03 Jan 2019 12:18:21 GMT -->
 <head>
-    <?php include_once './layouts/head-styles.php'; ?>
+    <?php include_once '../layouts/head-styles.php'; ?>
 </head>
 
 <body>
+
 
     <div class="ai-preloader active">
         <div class="ai-preloader-inner h-100 d-flex align-items-center justify-content-center">
@@ -17,23 +46,11 @@
             <div class="ai-child ai-bounce3"></div>
         </div>
     </div>
-    
+  
     <!-- Main Wrapper Start -->
-    <div class="wrapper enable-header-transparent">
+    <div class="wrapper">
         <!-- Header Area Start -->
-        <header class="header header-transparent header-fullwidth header-style-1">
-            <div class="top-bar d-none d-md-block">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-12 text-center">
-                            <div class="notice-text-wrapper">
-                                <p class="notice-text"><span><strong>BIG</strong> SUMMER</span> <strong>OFF 50%</strong> SHOPPING NOW - DON'T MISS THIS CHANGE.</p>
-                                <a class="close-notice"><i class="dl-icon-close"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <header class="header header-fullwidth header-style-1">
             <div class="header-inner fixed-header">
                 <div class="container-fluid">
                     <div class="row align-items-center">
@@ -42,7 +59,7 @@
                             <nav class="main-navigation">
                                 <ul class="mainmenu">
                                     <li class="mainmenu__item menu-item-has-children megamenu-holder">
-                                        <a href="<?= BASE_URL ?>" class="mainmenu__link">
+                                        <a href="index.html" class="mainmenu__link">
                                             <span class="mm-text">Home</span>
                                         </a>
                                         <ul class="megamenu four-column">
@@ -52,7 +69,7 @@
                                                 </a>
                                                 <ul>
                                                     <li>
-                                                        <a href="<?= BASE_URL ?>">
+                                                        <a href="index.html">
                                                             <span class="mm-text">Demo 01</span>
                                                         </a>
                                                     </li>
@@ -177,7 +194,7 @@
                                         </ul>
                                     </li>
                                     <li class="mainmenu__item menu-item-has-children">
-                                        <a href="<?= BASE_URL . "danh-muc/danh-sach-sp.php?id=" . $c['id'] ?>" class="mainmenu__link">
+                                        <a href="shop-sidebar.html" class="mainmenu__link">
                                             <span class="mm-text">Shop</span>
                                             <span class="tip">Hot</span>
                                         </a>
@@ -193,7 +210,7 @@
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="<?= BASE_URL . "danh-muc/danh-sach-sp.php?id=" . $c['id'] ?>">
+                                                        <a href="shop-sidebar.html">
                                                             <span class="mm-text">with Sidebar</span>
                                                         </a>
                                                     </li>
@@ -221,7 +238,7 @@
                                                 </a>
                                                 <ul>
                                                     <li>
-                                                        <a href="<?= BASE_URL . "chi-tiet/san-pham.php?id=" . $p['id'] ?>">
+                                                        <a href="product-details.html">
                                                             <span class="mm-text">Simple 01</span>
                                                         </a>
                                                     </li>
@@ -304,12 +321,12 @@
                                                     <div class="megamenu-banner-image"></div>
                                                     <div class="megamenu-banner-info">
                                                         <span>
-                                                            <a href="<?= BASE_URL . "danh-muc/danh-sach-sp.php?id=" . $c['id'] ?>">woman</a>
-                                                            <a href="<?= BASE_URL . "danh-muc/danh-sach-sp.php?id=" . $c['id'] ?>">shoes</a>
+                                                            <a href="shop-sidebar.html">woman</a>
+                                                            <a href="shop-sidebar.html">shoes</a>
                                                         </span>
                                                         <h3>new <strong>season</strong></h3>
                                                     </div>
-                                                    <a href="<?= BASE_URL . "danh-muc/danh-sach-sp.php?id=" . $c['id'] ?>" class="megamenu-banner-link"></a>
+                                                    <a href="shop-sidebar.html" class="megamenu-banner-link"></a>
                                                 </div>
                                             </li>
                                         </ul>
@@ -440,7 +457,7 @@
                         </div>
                         <div class="col-lg-2 col-md-3 col-4 text-lg-center">
                             <!-- Logo Start Here -->
-                            <a href="<?= BASE_URL ?>" class="logo-box">
+                            <a href="index.html" class="logo-box">
                                 <figure class="logo--normal"> 
                                     <img src="assets/img/logo/logo.svg" alt="Logo"/>   
                                 </figure>
@@ -494,7 +511,7 @@
                                     </a>
                                 </li>
                                 <li class="header-toolbar__item d-lg-none">
-                                    <a href="#" class="menu-btn"></a>               
+                                    <a href="#" class="menu-btn"></a>                 
                                 </li>
                             </ul>
                         </div>
@@ -509,7 +526,7 @@
             <div class="container-fluid">
                 <div class="row align-items-center">
                     <div class="col-4">
-                        <a href="<?= BASE_URL ?>" class="logo-box">
+                        <a href="index.html" class="logo-box">
                             <figure class="logo--normal">
                                 <img src="assets/img/logo/logo.svg" alt="Logo">
                             </figure>
@@ -566,7 +583,7 @@
                             <button class="dl-trigger">Open Menu</button>
                             <ul class="dl-menu">
                                 <li>
-                                    <a href="<?= BASE_URL ?>">
+                                    <a href="index.html">
                                         Home
                                     </a>
                                     <ul class="dl-submenu">
@@ -576,7 +593,7 @@
                                             </a>
                                             <ul class="dl-submenu">
                                                 <li>
-                                                    <a href="<?= BASE_URL ?>">
+                                                    <a href="index.html">
                                                         Demo 01
                                                     </a>
                                                 </li>
@@ -701,7 +718,7 @@
                                     </ul>
                                 </li>
                                 <li>
-                                    <a href="<?= BASE_URL . "danh-muc/danh-sach-sp.php?id=" . $c['id'] ?>">
+                                    <a href="shop-sidebar.html">
                                         Shop
                                         <span class="tip">Hot</span>
                                     </a>
@@ -717,7 +734,7 @@
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="<?= BASE_URL . "danh-muc/danh-sach-sp.php?id=" . $c['id'] ?>">
+                                                    <a href="shop-sidebar.html">
                                                         <span class="mm-text">with Sidebar</span>
                                                     </a>
                                                 </li>
@@ -745,7 +762,7 @@
                                             </a>
                                             <ul class="dl-submenu">
                                                 <li>
-                                                    <a href="<?= BASE_URL . "chi-tiet/san-pham.php?id=" . $p['id'] ?>">
+                                                    <a href="product-details.html">
                                                         <span class="mm-text">Simple 01</span>
                                                     </a>
                                                 </li>
@@ -828,18 +845,18 @@
                                                 <div class="megamenu-banner-image"></div>
                                                 <div class="megamenu-banner-info">
                                                     <span>
-                                                        <a href="<?= BASE_URL . "danh-muc/danh-sach-sp.php?id=" . $c['id'] ?>">woman</a>
-                                                        <a href="<?= BASE_URL . "danh-muc/danh-sach-sp.php?id=" . $c['id'] ?>">shoes</a>
+                                                        <a href="shop-sidebar.html">woman</a>
+                                                        <a href="shop-sidebar.html">shoes</a>
                                                     </span>
                                                     <h3>new <strong>season</strong></h3>
                                                 </div>
-                                                <a href="<?= BASE_URL . "danh-muc/danh-sach-sp.php?id=" . $c['id'] ?>" class="megamenu-banner-link"></a>
+                                                <a href="shop-sidebar.html" class="megamenu-banner-link"></a>
                                             </div>
                                         </li>
                                     </ul>
                                 </li>
                                 <li>
-                                    <a href="<?= BASE_URL . "danh-muc/danh-sach-sp.php?id=" . $c['id'] ?>">
+                                    <a href="shop-sidebar.html">
                                         Collections
                                     </a>
                                 </li>
@@ -967,850 +984,747 @@
         </header>
         <!-- Mobile Header area End -->
 
+        <!-- Breadcrumb area Start -->
+
+        <div class="breadcrumb-area pt--70 pt-md--25">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <ul class="breadcrumb">
+                            <li><a href="<?= BASE_URL ?>">Home</a></li>
+                            <li><a href="<?= BASE_URL . "danh-muc/danh-sach-sp.php?id=".$product['cate_id'] ?>"><?= $product['cate_name'] ?></a></li>
+                            <li class="current"><span><?= $product['name'] ?></span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Breadcrumb area End -->
+
         <!-- Main Content Wrapper Start -->
         <div id="content" class="main-content-wrapper">
-            <div class="homepage-slider">
+            <div class="page-content-inner enable-full-width">
+                <div class="container-fluid">
+                    <div class="row pt--40">
+                        <div class="col-md-6 product-main-image">
+                            <div class="product-image">
+                                <div class="product-gallery vertical-slide-nav">
+                                    <div class="product-gallery__thumb">
+                                        <div class="product-gallery__thumb--image">
+                                            <div class="nav-slider slick-vertical" 
+                                            data-options='{
+                                            "vertical": true, 
+                                            "vertical_md": false, 
+                                            "infinite_md": false, 
+                                            "slideToShow_sm": 4,
+                                            "slideToShow_xs": 3,
+                                            "arrows": true,
+                                            "arrowPrev": "fa fa-angle-up",
+                                            "arrowNext": "fa fa-angle-down",
+                                            "arrowPrev_md": "dl-icon-left",
+                                            "arrowNext_md": "dl-icon-right"
+                                            }'>
+                                                <?php foreach ($galleries as $gl): ?>
+                                                <figure class="product-gallery__thumb--single">
+                                                    <img src="<?= $gl['img_url']?>" alt="Products">
+                                                </figure>
 
-            <div id="rev_slider_2_1_wrapper" class="rev_slider_wrapper fullwidthbanner-container" data-alias="home-02" data-source="gallery" style="margin:0px auto;background:transparent;padding:0px;margin-top:0px;margin-bottom:0px;">
-                <!-- START REVOLUTION SLIDER 5.4.7 fullwidth mode -->
-                <div id="rev_slider_2_1" class="rev_slider fullwidthabanner" style="display:none;" data-version="5.4.7">
-                    <ul>    <!-- SLIDE  -->
-                        <li data-index="rs-4" data-transition="random-premium" data-slotamount="default" data-hideafterloop="0" data-hideslideonmobile="off"  data-easein="default" data-easeout="default" data-masterspeed="default"  data-thumb="assets/img/slider/home-02/100x50_m2-s1-1.jpg"  data-rotate="0"  data-saveperformance="off"  data-title="01" data-param1="" data-param2="" data-param3="" data-param4="" data-param5="" data-param6="" data-param7="" data-param8="" data-param9="" data-param10="" data-description="">
-                            <!-- MAIN IMAGE -->
-                            <img src="assets/img/slider/home-02/m2-s1-1.jpg"  alt=""  data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat" data-bgparallax="2" class="rev-slidebg" data-no-retina>
-                            <!-- LAYERS -->
-
-                            <!-- LAYER NR. 1 -->
-                            <div class="tp-caption     rev_group" 
-                                 id="slide-4-layer-1" 
-                                 data-x="['left','left','left','left']" data-hoffset="['370','370','50','50']" 
-                                 data-y="['middle','middle','middle','middle']" data-voffset="['0','0','0','0']" 
-                                            data-width="['740','740','516','364']"
-                                data-height="['380','380','241','205']"
-                                data-whitespace="nowrap"
-                     
-                                data-type="group" 
-                                data-responsive_offset="on" 
-
-                                data-frames='[{"delay":10,"speed":300,"frame":"0","from":"opacity:0;","to":"o:1;","ease":"Power3.easeInOut"},{"delay":"wait","speed":300,"frame":"999","to":"opacity:0;","ease":"Power3.easeInOut"}]'
-                                data-margintop="[0,0,0,0]"
-                                data-marginright="[0,0,0,0]"
-                                data-marginbottom="[0,0,0,0]"
-                                data-marginleft="[0,0,0,0]"
-                                data-textAlign="['inherit','inherit','inherit','inherit']"
-                                data-paddingtop="[0,0,0,0]"
-                                data-paddingright="[0,0,0,0]"
-                                data-paddingbottom="[0,0,0,0]"
-                                data-paddingleft="[0,0,0,0]"
-
-                                style="z-index: 5; min-width: 740px; max-width: 740px; max-width: 380px; max-width: 380px; white-space: nowrap; font-size: 20px; line-height: 22px; font-weight: 400; color: #ffffff; letter-spacing: 0px;">
-                            <!-- LAYER NR. 2 -->
-                            <div class="tp-caption tp-shape tp-shapewrapper  tp-resizeme" 
-                                 id="slide-4-layer-3" 
-                                 data-x="['left','left','left','left']" data-hoffset="['0','0','0','0']" 
-                                 data-y="['top','top','top','top']" data-voffset="['0','0','0','0']" 
-                                            data-width="['640','640','430','343']"
-                                data-height="['130','130','80','60']"
-                                data-whitespace="nowrap"
-                     
-                                data-type="shape" 
-                                data-responsive_offset="on" 
-
-                                data-frames='[{"delay":"+390","speed":1500,"frame":"0","from":"x:[-100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","to":"o:1;","ease":"Power3.easeInOut"},{"delay":"wait","speed":300,"frame":"999","to":"auto:auto;","ease":"Power3.easeInOut"}]'
-                                data-margintop="[0,0,0,0]"
-                                data-marginright="[0,0,0,0]"
-                                data-marginbottom="[0,0,0,0]"
-                                data-marginleft="[0,0,0,0]"
-                                data-textAlign="['inherit','inherit','inherit','inherit']"
-                                data-paddingtop="[0,0,0,0]"
-                                data-paddingright="[0,0,0,0]"
-                                data-paddingbottom="[0,0,0,0]"
-                                data-paddingleft="[0,0,0,0]"
-
-                                style="z-index: 6;background-color:rgb(255,255,255);">
-                                <div class="rs-looped rs-slideloop"  data-easing="" data-speed="2" data-xs="20" data-xe="0" data-ys="0" data-ye="0"> 
-                                </div>
-                             </div>
-
-                            <!-- LAYER NR. 3 -->
-                            <div class="tp-caption   tp-resizeme" 
-                                 id="slide-4-layer-2" 
-                                 data-x="['left','left','left','left']" data-hoffset="['50','50','30','30']" 
-                                 data-y="['top','top','top','top']" data-voffset="['20','20','12','7']" 
-                                            data-fontsize="['64','64','50','36']"
-                                data-lineheight="['85','85','50','40']"
-                                data-width="none"
-                                data-height="none"
-                                data-whitespace="nowrap"
-                     
-                                data-type="text" 
-                                data-responsive_offset="on" 
-
-                                data-frames='[{"delay":"+990","speed":1500,"frame":"0","from":"x:[-100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","to":"o:1;","ease":"Power3.easeInOut"},{"delay":"wait","speed":300,"frame":"999","to":"auto:auto;","ease":"Power3.easeInOut"}]'
-                                data-margintop="[0,0,0,0]"
-                                data-marginright="[0,0,0,0]"
-                                data-marginbottom="[0,0,0,0]"
-                                data-marginleft="[0,0,0,0]"
-                                data-textAlign="['inherit','inherit','inherit','inherit']"
-                                data-paddingtop="[,,,]"
-                                data-paddingright="[,,,]"
-                                data-paddingbottom="[,,,]"
-                                data-paddingleft="[,,,]"
-
-                                style="z-index: 7; white-space: nowrap; font-size: 64px; line-height: 85px; font-weight: 400; color: #282828; letter-spacing: 0px;font-family:Playfair Display;font-style:italic;">Printed Bermuda 
-                            </div>
-
-                            <!-- LAYER NR. 4 -->
-                            <div class="tp-caption tp-shape tp-shapewrapper  tp-resizeme" 
-                                 id="slide-4-layer-4" 
-                                 data-x="['left','left','left','left']" data-hoffset="['0','0','0','0']" 
-                                 data-y="['top','top','top','top']" data-voffset="['140','140','90','70']" 
-                                            data-width="['570','570','343','292']"
-                                data-height="['130','130','81','62']"
-                                data-whitespace="nowrap"
-                     
-                                data-type="shape" 
-                                data-responsive_offset="on" 
-
-                                data-frames='[{"delay":"+1490","speed":1500,"frame":"0","from":"x:[-100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","to":"o:1;","ease":"Power3.easeInOut"},{"delay":"wait","speed":300,"frame":"999","to":"auto:auto;","ease":"Power3.easeInOut"}]'
-                                data-margintop="[0,0,0,0]"
-                                data-marginright="[0,0,0,0]"
-                                data-marginbottom="[0,0,0,0]"
-                                data-marginleft="[0,0,0,0]"
-                                data-textAlign="['inherit','inherit','inherit','inherit']"
-                                data-paddingtop="[0,0,0,0]"
-                                data-paddingright="[0,0,0,0]"
-                                data-paddingbottom="[0,0,0,0]"
-                                data-paddingleft="[0,0,0,0]"
-
-                                style="z-index: 8;background-color:rgb(255,255,255);">
-                                <div class="rs-looped rs-slideloop"  data-easing="" data-speed="2" data-xs="20" data-xe="0" data-ys="0" data-ye="0"> </div>
-                            </div>
-
-                            <!-- LAYER NR. 5 -->
-                            <div class="tp-caption   tp-resizeme" 
-                                 id="slide-4-layer-5" 
-                                 data-x="['left','left','left','left']" data-hoffset="['50','50','30','30']" 
-                                 data-y="['top','top','top','top']" data-voffset="['148','148','106','80']" 
-                                            data-fontsize="['93','93','50','36']"
-                                data-lineheight="['115','115','50','40']"
-                                data-letterspacing="['12','12','12','8']"
-                                data-width="none"
-                                data-height="none"
-                                data-whitespace="nowrap"
-                     
-                                data-type="text" 
-                                data-responsive_offset="on" 
-
-                                data-frames='[{"delay":"+2090","speed":1500,"frame":"0","from":"x:[-100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","to":"o:1;","ease":"Power3.easeInOut"},{"delay":"wait","speed":300,"frame":"999","to":"auto:auto;","ease":"Power3.easeInOut"}]'
-                                data-margintop="[0,0,0,0]"
-                                data-marginright="[0,0,0,0]"
-                                data-marginbottom="[0,0,0,0]"
-                                data-marginleft="[0,0,0,0]"
-                                data-textAlign="['inherit','inherit','inherit','inherit']"
-                                data-paddingtop="[0,0,0,0]"
-                                data-paddingright="[0,0,0,0]"
-                                data-paddingbottom="[0,0,0,0]"
-                                data-paddingleft="[0,0,0,0]"
-
-                                style="z-index: 9; white-space: nowrap; font-size: 93px; line-height: 115px; font-weight: 700; color: #282828; letter-spacing: 12px;font-family:Montserrat;">SHORTS </div>
-
-                            <!-- LAYER NR. 6 -->
-                            <a class="tp-caption LA_Black_btn rev-btn " href="<?= BASE_URL . "danh-muc/danh-sach-sp.php?id=" . $c['id'] ?>" 
-                                 id="slide-4-layer-6" 
-                                 data-x="['left','left','left','left']" data-hoffset="['0','0','0','0']" 
-                                 data-y="['top','top','top','top']" data-voffset="['280','280','180','140']" 
-                                            data-width="none"
-                                data-height="none"
-                                data-whitespace="nowrap"
-                     
-                                data-type="button" 
-                                data-responsive_offset="on" 
-                                data-responsive="off"
-                                data-frames='[{"delay":"+2590","speed":2000,"frame":"0","from":"y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;opacity:0;","to":"o:1;","ease":"Power4.easeInOut"},{"delay":"wait","speed":300,"frame":"999","to":"auto:auto;","ease":"Power3.easeInOut"},{"frame":"hover","speed":"300","ease":"Linear.easeNone","to":"o:1;rX:0;rY:0;rZ:0;z:0;","style":"c:rgb(255,255,255);bg:rgb(207,152,126);bs:solid;bw:0 0 0 0;"}]'
-                                data-margintop="[0,0,0,0]"
-                                data-marginright="[0,0,0,0]"
-                                data-marginbottom="[0,0,0,0]"
-                                data-marginleft="[0,0,0,0]"
-                                data-textAlign="['inherit','inherit','inherit','inherit']"
-                                data-paddingtop="[15,15,15,12]"
-                                data-paddingright="[45,45,45,35]"
-                                data-paddingbottom="[15,15,15,12]"
-                                data-paddingleft="[45,45,45,35]"
-
-                                style="z-index: 10; white-space: nowrap; border-color:rgba(0,0,0,1);outline:none;box-shadow:none;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;cursor:pointer;">Shop Now </a>
-                            </div>
-                        </li>
-                        <!-- SLIDE  -->
-                        <li data-index="rs-5" data-transition="random-premium" data-slotamount="default" data-hideafterloop="0" data-hideslideonmobile="off"  data-easein="default" data-easeout="default" data-masterspeed="default"  data-thumb="assets/img/slider/home-02/100x50_m2-s2-1.jpg"  data-rotate="0"  data-saveperformance="off"  data-title="02" data-param1="" data-param2="" data-param3="" data-param4="" data-param5="" data-param6="" data-param7="" data-param8="" data-param9="" data-param10="" data-description="">
-                            <!-- MAIN IMAGE -->
-                            <img src="assets/img/slider/home-02/m2-s2-1.jpg"  alt=""  data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat" data-bgparallax="2" class="rev-slidebg" data-no-retina>
-                            <!-- LAYERS -->
-
-                            <!-- LAYER NR. 7 -->
-                            <div class="tp-caption     rev_group" 
-                                 id="slide-5-layer-1" 
-                                 data-x="['left','left','left','left']" data-hoffset="['370','370','50','50']" 
-                                 data-y="['middle','middle','middle','middle']" data-voffset="['0','0','0','0']" 
-                                            data-width="['740','740','518','355']"
-                                data-height="['380','380','238','190']"
-                                data-whitespace="nowrap"
-                     
-                                data-type="group" 
-                                data-responsive_offset="on" 
-
-                                data-frames='[{"delay":10,"speed":300,"frame":"0","from":"opacity:0;","to":"o:1;","ease":"Power3.easeInOut"},{"delay":"wait","speed":300,"frame":"999","to":"opacity:0;","ease":"Power3.easeInOut"}]'
-                                data-margintop="[0,0,0,0]"
-                                data-marginright="[0,0,0,0]"
-                                data-marginbottom="[0,0,0,0]"
-                                data-marginleft="[0,0,0,0]"
-                                data-textAlign="['inherit','inherit','inherit','inherit']"
-                                data-paddingtop="[0,0,0,0]"
-                                data-paddingright="[0,0,0,0]"
-                                data-paddingbottom="[0,0,0,0]"
-                                data-paddingleft="[0,0,0,0]"
-
-                                style="z-index: 5; min-width: 740px; max-width: 740px; max-width: 380px; max-width: 380px; white-space: nowrap; font-size: 20px; line-height: 22px; font-weight: 400; color: #ffffff; letter-spacing: 0px;">
-                            <!-- LAYER NR. 8 -->
-                            <div class="tp-caption tp-shape tp-shapewrapper  tp-resizeme" 
-                                 id="slide-5-layer-3" 
-                                 data-x="['left','left','left','left']" data-hoffset="['0','0','0','0']" 
-                                 data-y="['top','top','top','top']" data-voffset="['0','0','0','0']" 
-                                            data-width="['640','640','465','330']"
-                                data-height="['130','130','80','60']"
-                                data-whitespace="nowrap"
-                     
-                                data-type="shape" 
-                                data-responsive_offset="on" 
-
-                                data-frames='[{"delay":"+390","speed":1500,"frame":"0","from":"x:[-100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","to":"o:1;","ease":"Power3.easeInOut"},{"delay":"wait","speed":300,"frame":"999","to":"auto:auto;","ease":"Power3.easeInOut"}]'
-                                data-margintop="[0,0,0,0]"
-                                data-marginright="[0,0,0,0]"
-                                data-marginbottom="[0,0,0,0]"
-                                data-marginleft="[0,0,0,0]"
-                                data-textAlign="['inherit','inherit','inherit','inherit']"
-                                data-paddingtop="[0,0,0,0]"
-                                data-paddingright="[0,0,0,0]"
-                                data-paddingbottom="[0,0,0,0]"
-                                data-paddingleft="[0,0,0,0]"
-
-                                style="z-index: 6;background-color:rgb(255,255,255);"> </div>
-
-                            <!-- LAYER NR. 9 -->
-                            <div class="tp-caption   tp-resizeme" 
-                                 id="slide-5-layer-2" 
-                                 data-x="['left','left','left','left']" data-hoffset="['50','50','40','30']" 
-                                 data-y="['top','top','top','top']" data-voffset="['14','14','13','7']" 
-                                            data-fontsize="['69','69','50','36']"
-                                data-lineheight="['92','92','50','40']"
-                                data-width="none"
-                                data-height="none"
-                                data-whitespace="nowrap"
-                     
-                                data-type="text" 
-                                data-responsive_offset="on" 
-
-                                data-frames='[{"delay":"+990","speed":1500,"frame":"0","from":"x:[-100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","to":"o:1;","ease":"Power3.easeInOut"},{"delay":"wait","speed":300,"frame":"999","to":"auto:auto;","ease":"Power3.easeInOut"}]'
-                                data-margintop="[0,0,0,0]"
-                                data-marginright="[0,0,0,0]"
-                                data-marginbottom="[0,0,0,0]"
-                                data-marginleft="[0,0,0,0]"
-                                data-textAlign="['inherit','inherit','inherit','inherit']"
-                                data-paddingtop="[,,,]"
-                                data-paddingright="[,,,]"
-                                data-paddingbottom="[,,,]"
-                                data-paddingleft="[,,,]"
-
-                                style="z-index: 7; white-space: nowrap; font-size: 69px; line-height: 92px; font-weight: 700; color: #282828; letter-spacing: 0px;font-family:Playfair Display;font-style:italic;">Autumn/ Winter </div>
-
-                            <!-- LAYER NR. 10 -->
-                            <div class="tp-caption tp-shape tp-shapewrapper  tp-resizeme" 
-                                 id="slide-5-layer-4" 
-                                 data-x="['left','left','left','left']" data-hoffset="['0','0','2','2']" 
-                                 data-y="['top','top','top','top']" data-voffset="['140','140','90','70']" 
-                                            data-width="['410','410','305','220']"
-                                data-height="['130','130','80','60']"
-                                data-whitespace="nowrap"
-                     
-                                data-type="shape" 
-                                data-responsive_offset="on" 
-
-                                data-frames='[{"delay":"+1490","speed":1500,"frame":"0","from":"x:[-100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","to":"o:1;","ease":"Power3.easeInOut"},{"delay":"wait","speed":300,"frame":"999","to":"auto:auto;","ease":"Power3.easeInOut"}]'
-                                data-margintop="[0,0,0,0]"
-                                data-marginright="[0,0,0,0]"
-                                data-marginbottom="[0,0,0,0]"
-                                data-marginleft="[0,0,0,0]"
-                                data-textAlign="['inherit','inherit','inherit','inherit']"
-                                data-paddingtop="[0,0,0,0]"
-                                data-paddingright="[0,0,0,0]"
-                                data-paddingbottom="[0,0,0,0]"
-                                data-paddingleft="[0,0,0,0]"
-
-                                style="z-index: 8;background-color:rgb(255,255,255);"> </div>
-
-                            <!-- LAYER NR. 11 -->
-                            <div class="tp-caption   tp-resizeme" 
-                                 id="slide-5-layer-5" 
-                                 data-x="['left','left','left','left']" data-hoffset="['50','50','40','30']" 
-                                 data-y="['top','top','top','top']" data-voffset="['162','162','105','80']" 
-                                            data-fontsize="['69','69','50','36']"
-                                data-lineheight="['84','84','50','40']"
-                                data-width="none"
-                                data-height="none"
-                                data-whitespace="nowrap"
-                     
-                                data-type="text" 
-                                data-responsive_offset="on" 
-
-                                data-frames='[{"delay":"+2090","speed":1500,"frame":"0","from":"x:[-100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","to":"o:1;","ease":"Power3.easeInOut"},{"delay":"wait","speed":300,"frame":"999","to":"auto:auto;","ease":"Power3.easeInOut"}]'
-                                data-margintop="[0,0,0,0]"
-                                data-marginright="[0,0,0,0]"
-                                data-marginbottom="[0,0,0,0]"
-                                data-marginleft="[0,0,0,0]"
-                                data-textAlign="['inherit','inherit','inherit','inherit']"
-                                data-paddingtop="[0,0,0,0]"
-                                data-paddingright="[0,0,0,0]"
-                                data-paddingbottom="[0,0,0,0]"
-                                data-paddingleft="[0,0,0,0]"
-
-                                style="z-index: 9; white-space: nowrap; font-size: 69px; line-height: 84px; font-weight: 600; color: #282828; font-family:Montserrat;">OFF 30% </div>
-
-                            <!-- LAYER NR. 12 -->
-                            <a class="tp-caption LA_Black_btn rev-btn " href="<?= BASE_URL . "danh-muc/danh-sach-sp.php?id=" . $c['id'] ?>" 
-                                 id="slide-5-layer-6" 
-                                 data-x="['left','left','left','left']" data-hoffset="['0','0','0','0']" 
-                                 data-y="['top','top','top','top']" data-voffset="['280','280','180','140']" 
-                                            data-width="none"
-                                data-height="none"
-                                data-whitespace="nowrap"
-                     
-                                data-type="button" 
-                                data-responsive_offset="on" 
-                                data-responsive="off"
-                                data-frames='[{"delay":"+2590","speed":2000,"frame":"0","from":"y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;opacity:0;","to":"o:1;","ease":"Power4.easeInOut"},{"delay":"wait","speed":300,"frame":"999","to":"auto:auto;","ease":"Power3.easeInOut"},{"frame":"hover","speed":"200","ease":"Linear.easeNone","to":"o:1;rX:0;rY:0;rZ:0;z:0;","style":"c:rgb(255,255,255);bg:rgb(207,152,126);bs:solid;bw:0 0 0 0;"}]'
-                                data-margintop="[0,0,0,0]"
-                                data-marginright="[0,0,0,0]"
-                                data-marginbottom="[0,0,0,0]"
-                                data-marginleft="[0,0,0,0]"
-                                data-textAlign="['inherit','inherit','inherit','inherit']"
-                                data-paddingtop="[15,15,15,12]"
-                                data-paddingright="[45,45,45,34]"
-                                data-paddingbottom="[15,15,15,12]"
-                                data-paddingleft="[45,45,45,35]"
-
-                                style="z-index: 10; white-space: nowrap; border-color:rgba(0,0,0,1);outline:none;box-shadow:none;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;cursor:pointer;">Shop Now </a>
-                            </div>
-                        </li>
-                        <!-- SLIDE  -->
-                        <li data-index="rs-6" data-transition="random-premium" data-slotamount="default" data-hideafterloop="0" data-hideslideonmobile="off"  data-easein="default" data-easeout="default" data-masterspeed="default"  data-thumb="assets/img/slider/home-02/100x50_m2-s3-1.jpg"  data-rotate="0"  data-saveperformance="off"  data-title="03" data-param1="" data-param2="" data-param3="" data-param4="" data-param5="" data-param6="" data-param7="" data-param8="" data-param9="" data-param10="" data-description="">
-                            <!-- MAIN IMAGE -->
-                            <img src="assets/img/slider/home-02/m2-s3-1.jpg"  alt=""  data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat" data-bgparallax="2" class="rev-slidebg" data-no-retina>
-                            <!-- LAYERS -->
-
-                            <!-- LAYER NR. 13 -->
-                            <div class="tp-caption     rev_group" 
-                                 id="slide-6-layer-1" 
-                                 data-x="['left','left','left','left']" data-hoffset="['380','380','59','40']" 
-                                 data-y="['middle','middle','middle','middle']" data-voffset="['0','0','-1','-1']" 
-                                            data-width="['715','715','509','368']"
-                                data-height="['297','297','249','194']"
-                                data-whitespace="nowrap"
-                     
-                                data-type="group" 
-                                data-responsive_offset="on" 
-
-                                data-frames='[{"delay":10,"speed":300,"frame":"0","from":"opacity:0;","to":"o:1;","ease":"Power3.easeInOut"},{"delay":"wait","speed":300,"frame":"999","to":"opacity:0;","ease":"Power3.easeInOut"}]'
-                                data-margintop="[0,0,0,0]"
-                                data-marginright="[0,0,0,0]"
-                                data-marginbottom="[0,0,0,0]"
-                                data-marginleft="[0,0,0,0]"
-                                data-textAlign="['inherit','inherit','inherit','inherit']"
-                                data-paddingtop="[0,0,0,0]"
-                                data-paddingright="[0,0,0,0]"
-                                data-paddingbottom="[0,0,0,0]"
-                                data-paddingleft="[0,0,0,0]"
-
-                                style="z-index: 5; min-width: 715px; max-width: 715px; max-width: 297px; max-width: 297px; white-space: nowrap; font-size: 20px; line-height: 22px; font-weight: 400; color: #ffffff; letter-spacing: 0px;">
-                            <!-- LAYER NR. 14 -->
-                            <div class="tp-caption   tp-resizeme" 
-                                 id="slide-6-layer-2" 
-                                 data-x="['left','left','left','left']" data-hoffset="['0','0','0','0']" 
-                                 data-y="['top','top','top','top']" data-voffset="['0','0','-1','-5']" 
-                                            data-fontsize="['50','50','40','30']"
-                                data-lineheight="['67','67','50','40']"
-                                data-width="none"
-                                data-height="none"
-                                data-whitespace="nowrap"
-                     
-                                data-type="text" 
-                                data-responsive_offset="on" 
-
-                                data-frames='[{"delay":"+390","speed":1500,"frame":"0","from":"x:[-100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","to":"o:1;","ease":"Power3.easeInOut"},{"delay":"wait","speed":300,"frame":"999","to":"auto:auto;","ease":"Power3.easeInOut"}]'
-                                data-margintop="[0,0,0,0]"
-                                data-marginright="[0,0,0,0]"
-                                data-marginbottom="[0,0,0,0]"
-                                data-marginleft="[0,0,0,0]"
-                                data-textAlign="['inherit','inherit','inherit','inherit']"
-                                data-paddingtop="[,,,]"
-                                data-paddingright="[,,,]"
-                                data-paddingbottom="[,,,]"
-                                data-paddingleft="[,,,]"
-
-                                style="z-index: 6; white-space: nowrap; font-size: 50px; line-height: 67px; font-weight: 400; color: #ffffff; letter-spacing: 0px;font-family:Playfair Display;font-style:italic;">Sunglasses Woman </div>
-
-                            <!-- LAYER NR. 15 -->
-                            <div class="tp-caption   tp-resizeme" 
-                                 id="slide-6-layer-5" 
-                                 data-x="['left','left','left','left']" data-hoffset="['0','0','0','0']" 
-                                 data-y="['top','top','top','top']" data-voffset="['61','61','60','41']" 
-                                            data-fontsize="['123','123','90','70']"
-                                data-lineheight="['150','150','100','80']"
-                                data-width="none"
-                                data-height="none"
-                                data-whitespace="nowrap"
-                     
-                                data-type="text" 
-                                data-responsive_offset="on" 
-
-                                data-frames='[{"delay":"+890","speed":1500,"frame":"0","from":"x:[-100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","to":"o:1;","ease":"Power3.easeInOut"},{"delay":"wait","speed":300,"frame":"999","to":"auto:auto;","ease":"Power3.easeInOut"}]'
-                                data-margintop="[0,0,0,0]"
-                                data-marginright="[0,0,0,0]"
-                                data-marginbottom="[0,0,0,0]"
-                                data-marginleft="[0,0,0,0]"
-                                data-textAlign="['inherit','inherit','inherit','inherit']"
-                                data-paddingtop="[0,0,0,0]"
-                                data-paddingright="[0,0,0,0]"
-                                data-paddingbottom="[0,0,0,0]"
-                                data-paddingleft="[0,0,0,0]"
-
-                                style="z-index: 7; white-space: nowrap; font-size: 123px; line-height: 150px; font-weight: 600; color: #ffffff; font-family:Montserrat;">SALE 20% </div>
-
-                            <!-- LAYER NR. 16 -->
-                            <a class="tp-caption LA_White_btn rev-btn " href="<?= BASE_URL . "danh-muc/danh-sach-sp.php?id=" . $c['id'] ?>" 
-                                 id="slide-6-layer-6" 
-                                 data-x="['left','left','left','left']" data-hoffset="['1','1','0','0']" 
-                                 data-y="['top','top','top','top']" data-voffset="['225','225','184','142']" 
-                                            data-width="none"
-                                data-height="none"
-                                data-whitespace="nowrap"
-                     
-                                data-type="button"
-                                data-responsive_offset="on" 
-                                data-responsive="off"
-                                data-frames='[{"delay":"+1270","speed":2000,"frame":"0","from":"y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;opacity:0;","to":"o:1;","ease":"Power4.easeInOut"},{"delay":"wait","speed":300,"frame":"999","to":"auto:auto;","ease":"Power3.easeInOut"},{"frame":"hover","speed":"200","ease":"Linear.easeNone","to":"o:1;rX:0;rY:0;rZ:0;z:0;","style":"c:rgb(255,255,255);bg:rgb(207,152,126);bs:solid;bw:0 0 0 0;"}]'
-                                data-margintop="[0,0,0,0]"
-                                data-marginright="[0,0,0,0]"
-                                data-marginbottom="[0,0,0,0]"
-                                data-marginleft="[0,0,0,0]"
-                                data-textAlign="['inherit','inherit','inherit','inherit']"
-                                data-paddingtop="[15,15,15,12]"
-                                data-paddingright="[45,45,45,35]"
-                                data-paddingbottom="[15,15,15,12]"
-                                data-paddingleft="[45,45,45,35]"
-
-                                style="z-index: 8; white-space: nowrap; border-color:rgba(0,0,0,1);outline:none;box-shadow:none;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;cursor:pointer;">Shop Now </a>
-                            </div>
-                        </li>
-                    </ul>
-                    <div class="tp-bannertimer tp-bottom" style="visibility: hidden !important;"></div> 
-                </div>
-            </div><!-- END REVOLUTION SLIDER -->
-            </div>
-
-            <!-- Banner Start Here -->
-            <div class="banner-area">
-                <div class="container-fluid p-0">
-                    <div class="row no-gutters">
-                        <?php
-                            require_once './helpers/db.php';
-                            $cateQuery = "select * from categories limit 4";
-                            $cates = executeQuery($cateQuery, true);
-                            $count = 0;
-                        ?>
-                        <?php foreach($cates as $c):?>
-                        <div class="col-lg-3 col-md-6">
-                            <div class="banner-box banner-type-2 banner-hover-2">
-                                <div class="banner-inner">
-                                    <div class="banner-image">
-                                        <img src="<?= $c['image']?>" alt="Banner">
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="banner-info">
-                                        <a class="banner-btn-2" href="<?= BASE_URL . "danh-muc/danh-sach-sp.php?id=" . $c['id'] ?>">
-                                            <span class="normal-view"><?= $c['name']?></span>
-                                            <span class="hover-view">Shop Now</span>
-                                        </a>
+                                    <div class="product-gallery__large-image">
+                                        <div class="gallery-with-thumbs">
+                                            <div class="product-gallery__wrapper">
+                                                <div class="main-slider product-gallery__full-image image-popup">
+                                                    <?php foreach ($galleries as $gl): ?>
+                                                        <figure class="product-gallery__image zoom">
+                                                            <img src="<?= $gl['img_url']?>" alt="Product">
+                                                        </figure>
+                                                    <?php endforeach; ?>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <a class="banner-link banner-overlay" href="<?= BASE_URL . "danh-muc/danh-sach-sp.php?id=" . $c['id'] ?>">Shop Now</a>
                                 </div>
                             </div>
                         </div>
-                        <?php endforeach;?>
+                        <div class="col-md-6 product-main-details mt--40 mt-md--10 mt-sm--30">
+                            <div class="product-summary">
+                                <div class="product-rating float-left">
+                                    <span>
+                                        <i class="dl-icon-star rated"></i>
+                                        <i class="dl-icon-star rated"></i>
+                                        <i class="dl-icon-star rated"></i>
+                                        <i class="dl-icon-star rated"></i>
+                                        <i class="dl-icon-star rated"></i>
+                                    </span>
+                                    <a href="#" class="review-link">(1 customer review)</a>
+                                </div>
+                                <div class="product-navigation">
+                                    <a href="#" class="prev"><i class="dl-icon-left"></i></a>
+                                    <a href="#" class="next"><i class="dl-icon-right"></i></a>
+                                </div>
+                                <div class="clearfix"></div>
+                                <h3 class="product-title"><?= $product['name']?></h3>
+                                <span class="product-stock in-stock float-right">
+                                    <i class="dl-icon-check-circle1"></i>
+                                    in stock
+                                </span>
+                                <div class="product-price-wrapper mb--40 mb-md--10">
+                                    <span class="money">$<?= $product['sell_price']?></span>
+                                    <span class="old-price">
+                                        <span class="money">$<?= $product['ori_price']?></span>
+                                    </span>
+                                </div>
+                                <div class="clearfix"></div>
+                                <p class="product-short-description mb--45 mb-sm--20">
+                                    <?php echo $product['short_desc']?>
+                                </p>
+                                <form action="#" class="form--action mb--30 mb-sm--20">
+                                    <div class="product-action flex-row align-items-center">
+                                        <div class="quantity">
+                                            <input type="number" class="quantity-input" name="qty" id="qty" value="1" min="1">
+                                        </div>
+                                        <button type="button" class="btn btn-style-1 btn-large add-to-cart">
+                                            Add To Cart
+                                        </button>
+                                        <a href="wishlist.html"><i class="dl-icon-heart2"></i></a>
+                                        <a href="compare.html"><i class="dl-icon-compare2"></i></a>
+                                    </div>  
+                                </form>
+                                <div class="product-extra mb--40 mb-sm--20">
+                                    <a href="#" class="font-size-12"><i class="fa fa-map-marker"></i>Find store near you</a>
+                                    <a href="#" class="font-size-12"><i class="fa fa-exchange"></i>Delivery and return</a>
+                                </div>
+                                <div class="product-summary-footer d-flex justify-content-between flex-sm-row flex-column">
+                                    <div class="product-meta">
+                                        <span class="sku_wrapper font-size-12">SKU: <span class="sku">REF. LA-887</span></span>
+                                        <span class="posted_in font-size-12">Categories: 
+                                            <a href="shop-sidebar.html">Fashions</a>
+                                        </span>
+                                        <span class="posted_in font-size-12">Tags: 
+                                            <a href="shop-sidebar.html">dress,</a>
+                                            <a href="shop-sidebar.html">fashions,</a>
+                                            <a href="shop-sidebar.html">women</a>
+                                        </span>
+                                    </div>
+                                    <div class="product-share-box">
+                                        <span class="font-size-12">Share With</span>
+                                        <!-- Social Icons Start Here -->
+                                        <ul class="social social-small">
+                                            <li class="social__item">
+                                                <a href="facebook.com" class="social__link">
+                                                    <i class="fa fa-facebook"></i>
+                                                </a>
+                                            </li>
+                                            <li class="social__item">
+                                                <a href="twitter.com" class="social__link">
+                                                    <i class="fa fa-twitter"></i>
+                                                </a>
+                                            </li>
+                                            <li class="social__item">
+                                                <a href="plus.google.com" class="social__link">
+                                                    <i class="fa fa-google-plus"></i>
+                                                </a>
+                                            </li>
+                                            <li class="social__item">
+                                                <a href="plus.google.com" class="social__link">
+                                                    <i class="fa fa-pinterest-p"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <!-- Social Icons End Here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <!-- Banner End Here -->
-
-            <!-- Method area Start Here -->
-            <section class="method-area pt--80 pt-md--60 pb--40 pb-md--30">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-3 col-md-6 mb-md--30">
-                            <div class="method-box method-box-2 text-center">
-                                <img src="assets/img/icons/icon-1.png" alt="Icon">
-                                <h4 class="mt--20">FREESHIPPING WORLD WIDE</h4>
-                                <p>Freeship over oder $100</p>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-md--30">
-                            <div class="method-box method-box-2 text-center">
-                                <img src="assets/img/icons/icon-2.png" alt="Icon">
-                                <h4 class="mt--20">30 DAYS MONEY Returns</h4>
-                                <p>Derabitur eget vehicula</p>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-sm--30">
-                            <div class="method-box method-box-2 text-center">
-                                <img src="assets/img/icons/icon-3.png" alt="Icon">
-                                <h4 class="mt--20">SUPPORT 24/7</h4>
-                                <p>Dedicated Support</p>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6">
-                            <div class="method-box method-box-2 text-center">
-                                <img src="assets/img/icons/icon-4.png" alt="Icon">
-                                <h4 class="mt--20">100% SECURE CHECKOUT</h4>
-                                <p>Protect buyer &amp; Security</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <!-- Method area End Here -->
-
-            <!-- Product Tab area Start Here -->
-            <section class="product-tab-area pt--25 pt-md--20 pb--40 pb-md--30">
-                <div class="container">
-                    <div class="row">
+                    <div class="row justify-content-center pt--45 pt-lg--50 pt-md--55 pt-sm--35">
                         <div class="col-12">
-                            <div class="product-tab tab-style-1">
-                                <div class="nav nav-tabs product-tab__head mb--40 mb-md--30" id="product-tab" role="tablist">
-                                    <a class="product-tab__link nav-link active" id="nav-new-arrival-tab" data-toggle="tab" href="#nav-new-arrival" role="tab" aria-selected="true"> 
-                                        <span>Sản phẩm mới</span>
+                            <div class="product-data-tab tab-style-1">
+                                <div class="nav nav-tabs product-data-tab__head mb--40 mb-md--30" id="product-tab" role="tablist">
+                                    <a class="product-data-tab__link nav-link active" id="nav-description-tab" data-toggle="tab" href="#nav-description" role="tab" aria-selected="true"> 
+                                        <span>Description</span>
+                                    </a>
+                                    <a class="product-data-tab__link nav-link" id="nav-reviews-tab" data-toggle="tab" href="#nav-reviews" role="tab" aria-selected="true">
+                                        <span>Reviews(1)</span>
                                     </a>
                                 </div>
-                                <div class="tab-content product-tab__content" id="product-tabContent">
-                                    <div class="tab-pane fade show active" id="nav-new-arrival" role="tabpanel" aria-labelledby="nav-new-arrival-tab">
-                                        <div class="row">
-                                            <?php
-                                                $productQuery = "select * from " . PRODUCT_TABLE
-                                                                . " order by id desc limit 6";
-                                                require_once './helpers/db.php';
-                                                $products = executeQuery($productQuery, true);
-                                                
-                                            ?>
-                                            <?php foreach($products as $p):?>
-                                            <div class="col-lg-4 col-sm-6 mb--40 mb-md--30">
-                                                <div class="airi-product">
-                                                    <div class="product-inner">
-                                                        <figure class="product-image">
-                                                            <div class="product-image--holder">
-                                                                <a href="<?= BASE_URL . "chi-tiet/san-pham.php?id=" . $p['id'] ?>">
-                                                                    <img src="<?= $p['image']?>" alt="Product Image" class="primary-image">
-                                                                    <img src="<?= $p['image2']?>" alt="Product Image" class="secondary-image">
-                                                                </a>
-                                                            </div>
-                                                            <div class="airi-product-action">
-                                                                <div class="product-action">
-                                                                    <a class="quickview-btn action-btn" data-toggle="tooltip" data-placement="top" title="Quick Shop">
-                                                                        <span data-toggle="modal" data-target="#productModal">
-                                                                        	<i class="dl-icon-view"></i>
-                                                                        </span>
-                                                                    </a>
-                                                                    <a class="add_to_cart_btn action-btn" href="cart.html" data-toggle="tooltip" data-placement="top" title="Add to Cart">
-                                                                    	<i class="dl-icon-cart29"></i>
-                                                                    </a>
-                                                                    <a class="add_wishlist action-btn" href="wishlist.html" data-toggle="tooltip" data-placement="top" title="Add to Wishlist">
-                                                                    	<i class="dl-icon-heart4"></i>
-                                                                    </a>
-                                                                    <a class="add_compare action-btn" href="compare.html" data-toggle="tooltip" data-placement="top" title="Add to Compare">
-                                                                    	<i class="dl-icon-compare"></i>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                            <span class="product-badge new">New</span>
-                                                        </figure>
-                                                        <div class="product-info">
-                                                            <h3 class="product-title">
-                                                                <a href="<?= BASE_URL . "chi-tiet/san-pham.php?id=" . $p['id'] ?>"><?= $p['name']?></a>
-                                                            </h3>
-                                                            <div class="product-rating">
+                                <div class="tab-content product-data-tab__content" id="product-tabContent">
+                                    <div class="tab-pane fade show active" id="nav-description" role="tabpanel" aria-labelledby="nav-description-tab">
+                                        <div class="product-description">
+                                            <?= $product['short_desc']?>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="nav-reviews" role="tabpanel" aria-labelledby="nav-reviews-tab">
+                                        <div class="product-reviews">
+                                            <h3 class="review__title">1 review for Waxed-effect pleated skirt</h3>
+                                            <ul class="review__list">
+                                                <li class="review__item">
+                                                    <div class="review__container">
+                                                        <img src="assets/img/others/comment-icon-2.png" alt="Review Avatar" class="review__avatar">
+                                                        <div class="review__text">
+                                                            <div class="product-rating float-right">
                                                                 <span>
                                                                     <i class="dl-icon-star rated"></i>
                                                                     <i class="dl-icon-star rated"></i>
                                                                     <i class="dl-icon-star rated"></i>
-                                                                    <i class="dl-icon-star"></i>
-                                                                    <i class="dl-icon-star"></i>
+                                                                    <i class="dl-icon-star rated"></i>
+                                                                    <i class="dl-icon-star rated"></i>
                                                                 </span>
                                                             </div>
-                                                            <span class="product-price-wrapper">
-                                                                <span class="money">$<?= $p['sell_price']?></span>
-                                                                <span class="product-price-old">
-                                                                    <span class="money">$<?= $p['ori_price']?></span>
-                                                                </span>
-                                                            </span>
+                                                            <div class="review__meta">
+                                                                <strong class="review__author">John Snow </strong>
+                                                                <span class="review__dash">-</span>
+                                                                <span class="review__published-date">November 20, 2018</span>
+                                                            </div>
+                                                            <div class="clearfix"></div>
+                                                            <p class="review__description">Aliquam egestas libero ac turpis pharetra, in vehicula lacus scelerisque. Vestibulum ut sem laoreet, feugiat tellus at, hendrerit arcu.</p>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </li>
+                                            </ul>
+                                            <div class="review-form-wrapper">
+                                                <span class="reply-title"><strong>Add a review</strong></span>
+                                                <form action="#" class="form">
+                                                    <div class="form-notes mb--20">
+                                                        <p>Your email address will not be published. Required fields are marked <span class="required">*</span></p>
+                                                    </div>
+                                                    <div class="form__group mb--30 mb-sm--20">
+                                                        <div class="revew__rating">
+                                                            <p class="stars selected">
+                                                                <a class="star-1 active" href="#">1</a>
+                                                                <a class="star-2" href="#">2</a>
+                                                                <a class="star-3" href="#">3</a>
+                                                                <a class="star-4" href="#">4</a>
+                                                                <a class="star-5" href="#">5</a>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form__group mb--30 mb-sm--20">
+                                                        <div class="form-row">
+                                                            <div class="col-sm-6 mb-sm--20">
+                                                                <label class="form__label" for="name">Name<span class="required">*</span></label>
+                                                                <input type="text" name="name" id="name" class="form__input">
+                                                            </div>  
+                                                            <div class="col-sm-6">
+                                                                <label class="form__label" for="email">email<span class="required">*</span></label>
+                                                                <input type="email" name="email" id="email" class="form__input">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form__group mb--30 mb-sm--20">
+                                                        <div class="form-row">
+                                                            <div class="col-12">
+                                                                <label class="form__label" for="email">Your Review<span class="required">*</span></label>
+                                                                <textarea name="review" id="review" class="form__input form__input--textarea"></textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form__group">
+                                                        <div class="form-row">
+                                                            <div class="col-12">
+                                                                <input type="submit" value="Submit" class="btn btn-style-1 btn-submit">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
                                             </div>
-                                            <?php endforeach;?>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-12 text-center">
-                            <a href="<?= BASE_URL . "danh-muc/danh-sach-sp.php?id=" . $c['id'] ?>" class="heading-button">View All</a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <!-- Product Tab area End Here -->
-
-            <!-- Featured Products area Start Here -->
-            <section class="featured-products-area pt--30 pb--80 pt-md--20 pb-md--60">
-                <div class="container-fluid p-0">
-                    <div class="row mb--30 mb-md--20">
-                        <div class="col-12 text-center">
-                            <h2 class="heading-secondary">Sản phẩm hot</h2>
-                        </div>
-                    </div>
-                    <div class="row no-gutters">
+                    <div class="row pt--65 pt-md--45 pt-sm--25 pb--35 pb-md--25 pb-sm--15">
                         <div class="col-12">
-                            <div class="airi-element-carousel product-carousel dot-style-1 dark-dot slick-dot-mb-40 slick-dot-mb-md-30"
-                                data-slick-options='{
+                            <div class="row mb--40 mb-md--30">
+                                <div class="col-12 text-center">
+                                    <h2 class="heading-secondary">Up-Sells Products</h2>
+                                    <hr class="separator center mt--25 mt-md--15">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="airi-element-carousel product-carousel nav-vertical-center" 
+                                    data-slick-options='{
                                     "spaceBetween": 30,
-                                    "slidesToShow": 2,
-                                    "slidesToScroll": 2,
-                                    "autoplaySpeed": 5000,
-                                    "speed": 1000,
-                                    "dots": true,
-                                    "infinite": true,
-                                    "centerMode": true,
-                                    "centerPadding": "20%"
-                                }'
-                                data-slick-responsive='[
-                                    {"breakpoint":991, "settings": {"slidesToShow": 1} }
-                                ]'
-                            >
-                                <?php
-                                    $hotProductQuery = "select 
-                                                            p.*,
-                                                            c.name as cate_name
-                                                    from products p
-                                                    join categories c
-                                                    on p.cate_id = c.id
-                                                    order by views desc limit 5";
-                                    require_once './helpers/db.php';
-                                    $hotProducts = executeQuery($hotProductQuery, true);
-
-                                ?>
-                                <?php foreach($hotProducts as $p):?>
-                                <div class="item">
-                                    <div class="single-featured-product">
-                                        <div class="banner-box banner-type-3 banner-hover-1">
-                                            <div class="banner-inner">
-                                                <div class="banner-image">
-                                                    <img src="<?= $p['image']?>" alt="Banner">
+                                    "slidesToShow": 4,
+                                    "slidesToScroll": 1,
+                                    "arrows": true, 
+                                    "prevArrow": "dl-icon-left", 
+                                    "nextArrow": "dl-icon-right" 
+                                    }'
+                                    data-slick-responsive='[
+                                        {"breakpoint":1200, "settings": {"slidesToShow": 3} },
+                                        {"breakpoint":991, "settings": {"slidesToShow": 2} },
+                                        {"breakpoint":450, "settings": {"slidesToShow": 1} }
+                                    ]'
+                                    >
+                                        <div class="airi-product">
+                                            <div class="product-inner">
+                                                <figure class="product-image">
+                                                    <div class="product-image--holder">
+                                                        <a href="product-details.html">
+                                                            <img src="assets/img/products/prod-8-2.jpg" alt="Product Image" class="primary-image">
+                                                            <img src="assets/img/products/prod-8-1.jpg" alt="Product Image" class="secondary-image">
+                                                        </a>
+                                                    </div>
+                                                    <div class="airi-product-action">
+                                                        <div class="product-action">
+                                                            <a class="quickview-btn action-btn" data-toggle="tooltip" data-placement="top" title="Quick Shop">
+                                                                <span data-toggle="modal" data-target="#productModal">
+                                                                    <i class="dl-icon-view"></i>
+                                                                </span>
+                                                            </a>
+                                                            <a class="add_to_cart_btn action-btn" href="cart.html" data-toggle="tooltip" data-placement="top" title="Add to Cart">
+                                                                <i class="dl-icon-cart29"></i>
+                                                            </a>
+                                                            <a class="add_wishlist action-btn" href="wishlist.html" data-toggle="tooltip" data-placement="top" title="Add to Wishlist">
+                                                                <i class="dl-icon-heart4"></i>
+                                                            </a>
+                                                            <a class="add_compare action-btn" href="compare.html" data-toggle="tooltip" data-placement="top" title="Add to Compare">
+                                                                <i class="dl-icon-compare"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </figure>
+                                                <div class="product-info text-center">
+                                                    <h3 class="product-title">
+                                                        <a href="product-details.html">Polka dot blouse</a>
+                                                    </h3>
+                                                    <span class="product-price-wrapper">
+                                                        <span class="money">$49.00</span>
+                                                        <span class="product-price-old">
+                                                            <span class="money">$60.00</span>
+                                                        </span>
+                                                    </span>
                                                 </div>
-                                                <div class="banner-info">
-                                                    <p class="banner-title-1 lts-13"><?= $p['name']?></p>
-                                                    <h2 class="banner-title-2"><?= $p['cate_name']?></h2>
+                                            </div>
+                                        </div>
+                                        <div class="airi-product">
+                                            <div class="product-inner">
+                                                <figure class="product-image">
+                                                    <div class="product-image--holder">
+                                                        <a href="product-details.html">
+                                                            <img src="assets/img/products/prod-3-2.jpg" alt="Product Image" class="primary-image">
+                                                            <img src="assets/img/products/prod-3-3.jpg" alt="Product Image" class="secondary-image">
+                                                        </a>
+                                                    </div>
+                                                    <div class="airi-product-action">
+                                                        <div class="product-action">
+                                                            <a class="quickview-btn action-btn" data-toggle="tooltip" data-placement="top" title="Quick Shop">
+                                                                <span data-toggle="modal" data-target="#productModal">
+                                                                    <i class="dl-icon-view"></i>
+                                                                </span>
+                                                            </a>
+                                                            <a class="add_to_cart_btn action-btn" href="cart.html" data-toggle="tooltip" data-placement="top" title="Add to Cart">
+                                                                <i class="dl-icon-cart29"></i>
+                                                            </a>
+                                                            <a class="add_wishlist action-btn" href="wishlist.html" data-toggle="tooltip" data-placement="top" title="Add to Wishlist">
+                                                                <i class="dl-icon-heart4"></i>
+                                                            </a>
+                                                            <a class="add_compare action-btn" href="compare.html" data-toggle="tooltip" data-placement="top" title="Add to Compare">
+                                                                <i class="dl-icon-compare"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </figure>
+                                                <div class="product-info text-center">
+                                                    <h3 class="product-title">
+                                                        <a href="product-details.html">Dotted mesh blouse</a>
+                                                    </h3>
+                                                    <span class="product-price-wrapper">
+                                                        <span class="money">$49.00</span>
+                                                    </span>
                                                 </div>
-                                                <a class="banner-link banner-overlay" href="<?= BASE_URL . "danh-muc/danh-sach-sp.php?id=" . $c['id'] ?>">Shop Now</a>
+                                            </div>
+                                        </div>
+                                        <div class="airi-product">
+                                            <div class="product-inner">
+                                                <figure class="product-image">
+                                                    <div class="product-image--holder">
+                                                        <a href="product-details.html">
+                                                            <img src="assets/img/products/prod-1-1.jpg" alt="Product Image" class="primary-image">
+                                                            <img src="assets/img/products/prod-1-4.jpg" alt="Product Image" class="secondary-image">
+                                                        </a>
+                                                    </div>
+                                                    <div class="airi-product-action">
+                                                        <div class="product-action">
+                                                            <a class="quickview-btn action-btn" data-toggle="tooltip" data-placement="top" title="Quick Shop">
+                                                                <span data-toggle="modal" data-target="#productModal">
+                                                                    <i class="dl-icon-view"></i>
+                                                                </span>
+                                                            </a>
+                                                            <a class="add_to_cart_btn action-btn" href="cart.html" data-toggle="tooltip" data-placement="top" title="Add to Cart">
+                                                                <i class="dl-icon-cart29"></i>
+                                                            </a>
+                                                            <a class="add_wishlist action-btn" href="wishlist.html" data-toggle="tooltip" data-placement="top" title="Add to Wishlist">
+                                                                <i class="dl-icon-heart4"></i>
+                                                            </a>
+                                                            <a class="add_compare action-btn" href="compare.html" data-toggle="tooltip" data-placement="top" title="Add to Compare">
+                                                                <i class="dl-icon-compare"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </figure>
+                                                <div class="product-info text-center">
+                                                    <h3 class="product-title">
+                                                        <a href="product-details.html">Ruffled polka dot blouse</a>
+                                                    </h3>
+                                                    <span class="product-price-wrapper">
+                                                        <span class="money">$49.00</span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="airi-product">
+                                            <div class="product-inner">
+                                                <figure class="product-image">
+                                                    <div class="product-image--holder">
+                                                        <a href="product-details.html">
+                                                            <img src="assets/img/products/prod-20-1.jpg" alt="Product Image" class="primary-image">
+                                                            <img src="assets/img/products/prod-20-2.jpg" alt="Product Image" class="secondary-image">
+                                                        </a>
+                                                    </div>
+                                                    <div class="airi-product-action">
+                                                        <div class="product-action">
+                                                            <a class="quickview-btn action-btn" data-toggle="tooltip" data-placement="top" title="Quick Shop">
+                                                                <span data-toggle="modal" data-target="#productModal">
+                                                                    <i class="dl-icon-view"></i>
+                                                                </span>
+                                                            </a>
+                                                            <a class="add_to_cart_btn action-btn" href="cart.html" data-toggle="tooltip" data-placement="top" title="Add to Cart">
+                                                                <i class="dl-icon-cart29"></i>
+                                                            </a>
+                                                            <a class="add_wishlist action-btn" href="wishlist.html" data-toggle="tooltip" data-placement="top" title="Add to Wishlist">
+                                                                <i class="dl-icon-heart4"></i>
+                                                            </a>
+                                                            <a class="add_compare action-btn" href="compare.html" data-toggle="tooltip" data-placement="top" title="Add to Compare">
+                                                                <i class="dl-icon-compare"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <span class="product-badge sale">Sale</span>
+                                                </figure>
+                                                <div class="product-info text-center">
+                                                    <h3 class="product-title">
+                                                        <a href="product-details.html">Limited edition v-neck t-shirt</a>
+                                                    </h3>
+                                                    <span class="product-price-wrapper">
+                                                        <span class="money">$49.00</span>
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <?php endforeach; ?>
-                            </div> 
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <!-- Featured Products area End Here -->
-            <!-- Instagram Feed area Start Here -->
-            <div class="instagram-feed-area pt--80 pt-md--60 pb--65 pb-md--45">
-                
-                <div class="container-fluid p-0">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col-xl-3 offset-xl-2 col-lg-4">
-                            <div class="insta-content-header mb-md--15">
-                                <h5 class="font-size-16 heading-color font-bold">Follow us on</h5>
-                                <h2>@Airi Instagram</h2>
-                                <p class="font-2 font-size-16 heading-color">
-                                    Integer ut ligula quis lectus fringilla elementum porttitor sed est. Duis fringilla efficitur ligula sed.
-                                </p>
                             </div>
                         </div>
-                        <div class="col-xl-7 col-lg-8">
-                            <div class="instagram-feed">
-                                <div id="instafeed" class="instagram-feed-wrapper grid-space-30" data-userid="8774663968"
-                                data-accesstoken="8774663968.1677ed0.78a087bca56440759bdd9ed8f26e2aac">
+                    </div>
+                    <div class="row pt--35 pt-md--25 pt-sm--15 pb--75 pb-md--55 pb-sm--35">
+                        <div class="col-12">
+                            <div class="row mb--40 mb-md--30">
+                                <div class="col-12 text-center">
+                                    <h2 class="heading-secondary">Related Products</h2>
+                                    <hr class="separator center mt--25 mt-md--15">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="airi-element-carousel product-carousel nav-vertical-center" 
+                                    data-slick-options='{
+                                    "spaceBetween": 30,
+                                    "slidesToShow": 4,
+                                    "slidesToScroll": 1,
+                                    "arrows": true, 
+                                    "prevArrow": "dl-icon-left", 
+                                    "nextArrow": "dl-icon-right" 
+                                    }'
+                                    data-slick-responsive='[
+                                        {"breakpoint":1200, "settings": {"slidesToShow": 3} },
+                                        {"breakpoint":991, "settings": {"slidesToShow": 2} },
+                                        {"breakpoint":450, "settings": {"slidesToShow": 1} }
+                                    ]'
+                                    >
+                                        <div class="airi-product">
+                                            <div class="product-inner">
+                                                <figure class="product-image">
+                                                    <div class="product-image--holder">
+                                                        <a href="product-details.html">
+                                                            <img src="assets/img/products/prod-12-1.jpg" alt="Product Image" class="primary-image">
+                                                            <img src="assets/img/products/prod-12-4.jpg" alt="Product Image" class="secondary-image">
+                                                        </a>
+                                                    </div>
+                                                    <div class="airi-product-action">
+                                                        <div class="product-action">
+                                                            <a class="quickview-btn action-btn" data-toggle="tooltip" data-placement="top" title="Quick Shop">
+                                                                <span data-toggle="modal" data-target="#productModal">
+                                                                    <i class="dl-icon-view"></i>
+                                                                </span>
+                                                            </a>
+                                                            <a class="add_to_cart_btn action-btn" href="cart.html" data-toggle="tooltip" data-placement="top" title="Add to Cart">
+                                                                <i class="dl-icon-cart29"></i>
+                                                            </a>
+                                                            <a class="add_wishlist action-btn" href="wishlist.html" data-toggle="tooltip" data-placement="top" title="Add to Wishlist">
+                                                                <i class="dl-icon-heart4"></i>
+                                                            </a>
+                                                            <a class="add_compare action-btn" href="compare.html" data-toggle="tooltip" data-placement="top" title="Add to Compare">
+                                                                <i class="dl-icon-compare"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </figure>
+                                                <div class="product-info text-center">
+                                                    <h3 class="product-title">
+                                                        <a href="product-details.html">Open sweatshirt</a>
+                                                    </h3>
+                                                    <span class="product-price-wrapper">
+                                                        <span class="money">$49.00</span>
+                                                        <span class="product-price-old">
+                                                            <span class="money">$60.00</span>
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="airi-product">
+                                            <div class="product-inner">
+                                                <figure class="product-image">
+                                                    <div class="product-image--holder">
+                                                        <a href="product-details.html">
+                                                            <img src="assets/img/products/prod-5-3.jpg" alt="Product Image" class="primary-image">
+                                                            <img src="assets/img/products/prod-5-4.jpg" alt="Product Image" class="secondary-image">
+                                                        </a>
+                                                    </div>
+                                                    <div class="airi-product-action">
+                                                        <div class="product-action">
+                                                            <a class="quickview-btn action-btn" data-toggle="tooltip" data-placement="top" title="Quick Shop">
+                                                                <span data-toggle="modal" data-target="#productModal">
+                                                                    <i class="dl-icon-view"></i>
+                                                                </span>
+                                                            </a>
+                                                            <a class="add_to_cart_btn action-btn" href="cart.html" data-toggle="tooltip" data-placement="top" title="Add to Cart">
+                                                                <i class="dl-icon-cart29"></i>
+                                                            </a>
+                                                            <a class="add_wishlist action-btn" href="wishlist.html" data-toggle="tooltip" data-placement="top" title="Add to Wishlist">
+                                                                <i class="dl-icon-heart4"></i>
+                                                            </a>
+                                                            <a class="add_compare action-btn" href="compare.html" data-toggle="tooltip" data-placement="top" title="Add to Compare">
+                                                                <i class="dl-icon-compare"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </figure>
+                                                <div class="product-info text-center">
+                                                    <h3 class="product-title">
+                                                        <a href="product-details.html">Split suede handbag</a>
+                                                    </h3>
+                                                    <span class="product-price-wrapper">
+                                                        <span class="money">$49.00</span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="airi-product">
+                                            <div class="product-inner">
+                                                <figure class="product-image">
+                                                    <div class="product-image--holder">
+                                                        <a href="product-details.html">
+                                                            <img src="assets/img/products/prod-14-2.jpg" alt="Product Image" class="primary-image">
+                                                            <img src="assets/img/products/prod-14-1.jpg" alt="Product Image" class="secondary-image">
+                                                        </a>
+                                                    </div>
+                                                    <div class="airi-product-action">
+                                                        <div class="product-action">
+                                                            <a class="quickview-btn action-btn" data-toggle="tooltip" data-placement="top" title="Quick Shop">
+                                                                <span data-toggle="modal" data-target="#productModal">
+                                                                    <i class="dl-icon-view"></i>
+                                                                </span>
+                                                            </a>
+                                                            <a class="add_to_cart_btn action-btn" href="cart.html" data-toggle="tooltip" data-placement="top" title="Add to Cart">
+                                                                <i class="dl-icon-cart29"></i>
+                                                            </a>
+                                                            <a class="add_wishlist action-btn" href="wishlist.html" data-toggle="tooltip" data-placement="top" title="Add to Wishlist">
+                                                                <i class="dl-icon-heart4"></i>
+                                                            </a>
+                                                            <a class="add_compare action-btn" href="compare.html" data-toggle="tooltip" data-placement="top" title="Add to Compare">
+                                                                <i class="dl-icon-compare"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </figure>
+                                                <div class="product-info text-center">
+                                                    <h3 class="product-title">
+                                                        <a href="product-details.html">Super skinny blazer</a>
+                                                    </h3>
+                                                    <span class="product-price-wrapper">
+                                                        <span class="money">$49.00</span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="airi-product">
+                                            <div class="product-inner">
+                                                <figure class="product-image">
+                                                    <div class="product-image--holder">
+                                                        <a href="product-details.html">
+                                                            <img src="assets/img/products/prod-7-2.jpg" alt="Product Image" class="primary-image">
+                                                            <img src="assets/img/products/prod-7-1.jpg" alt="Product Image" class="secondary-image">
+                                                        </a>
+                                                    </div>
+                                                    <div class="airi-product-action">
+                                                        <div class="product-action">
+                                                            <a class="quickview-btn action-btn" data-toggle="tooltip" data-placement="top" title="Quick Shop">
+                                                                <span data-toggle="modal" data-target="#productModal">
+                                                                    <i class="dl-icon-view"></i>
+                                                                </span>
+                                                            </a>
+                                                            <a class="add_to_cart_btn action-btn" href="cart.html" data-toggle="tooltip" data-placement="top" title="Add to Cart">
+                                                                <i class="dl-icon-cart29"></i>
+                                                            </a>
+                                                            <a class="add_wishlist action-btn" href="wishlist.html" data-toggle="tooltip" data-placement="top" title="Add to Wishlist">
+                                                                <i class="dl-icon-heart4"></i>
+                                                            </a>
+                                                            <a class="add_compare action-btn" href="compare.html" data-toggle="tooltip" data-placement="top" title="Add to Compare">
+                                                                <i class="dl-icon-compare"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <span class="product-badge sale">Sale</span>
+                                                </figure>
+                                                <div class="product-info text-center">
+                                                    <h3 class="product-title">
+                                                        <a href="product-details.html">Leopard print satin shirt</a>
+                                                    </h3>
+                                                    <span class="product-price-wrapper">
+                                                        <span class="money">$49.00</span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- Instagram Feed area End Here -->
-
-
         </div>
         <!-- Main Content Wrapper Start -->
 
 
         <!-- Footer Start -->
-        <footer class="footer footer-1 bg--black ptb--40">
-            <div class="footer-top pb--40 pb-md--30">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-3 col-md-8 mb-md--30">
-                            <div class="footer-widget">
-                                <div class="textwidget">
-                                    <img src="assets/img/logo/logo-white.png" alt="Logo" class="mb--10">
-                                    <p class="font-size-16 font-2 mb--20">Integer ut ligula quis lectus fringilla elementum porttitor sed est. Duis fringilla efficitur ligula sed lobortis.</p>
-                                    <!-- Social Icons Start Here -->
-                                    <ul class="social">
-                                        <li class="social__item">
-                                            <a href="twitter.com" class="social__link color--white">
-                                                <i class="fa fa-twitter"></i>
-                                            </a>
-                                        </li>
-                                        <li class="social__item">
-                                            <a href="plus.google.com" class="social__link color--white">
-                                                <i class="fa fa-google-plus"></i>
-                                            </a>
-                                        </li>
-                                        <li class="social__item">
-                                            <a href="facebook.com" class="social__link color--white">
-                                                <i class="fa fa-facebook"></i>
-                                            </a>
-                                        </li>
-                                        <li class="social__item">
-                                            <a href="youtube.com" class="social__link color--white">
-                                                <i class="fa fa-youtube"></i>
-                                            </a>
-                                        </li>
-                                        <li class="social__item">
-                                            <a href="instagram.com" class="social__link color--white">
-                                                <i class="fa fa-instagram"></i>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                    <!-- Social Icons End Here -->
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-2 col-md-4 mb-md--30">
-                            <div class="footer-widget">
-                                <h3 class="widget-title">Company</h3>
-                                <ul class="widget-menu">
-                                    <li><a href="about-us.html">About Us</a></li>
-                                    <li><a href="#">Our Services</a></li>
-                                    <li><a href="#">Affiliate Program</a></li>
-                                    <li><a href="#">Work for Airi</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-lg-2 col-md-4 mb-sm--30">
-                            <div class="footer-widget">
-                                <h3 class="widget-title">USEFUL LINKS</h3>
-                                <ul class="widget-menu">
-                                    <li><a href="shop-collections.html">The Collections</a></li>
-                                    <li><a href="#">Size Guide</a></li>
-                                    <li><a href="#">Return Policiy</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-lg-2 col-md-4 mb-sm--30">
-                            <div class="footer-widget">
-                                <h3 class="widget-title">SHOPPING</h3>
-                                <ul class="widget-menu">
-                                    <li><a href="shop-instagram.html">Look Book</a></li>
-                                    <li><a href="<?= BASE_URL . "danh-muc/danh-sach-sp.php?id=" . $c['id'] ?>">Shop Sidebar</a></li>
-                                    <li><a href="shop-fullwidth.html">Shop Fullwidth</a></li>
-                                    <li><a href="shop-no-gutter.html">Man & Woman</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-4">
-                            <div class="footer-widget">
-                                <h4 class="widget-title">CONTACT INFO</h4>
-                                <ul class="contact-info">
-                                    <li class="contact-info__item">
-                                        <i class="fa fa-phone"></i>
-                                        <span><a href="#" class="contact-info__link">(+612) 2531 5600</a></span>
-                                    </li>
-                                    <li class="contact-info__item">
-                                        <i class="fa fa-envelope"></i>
-                                        <span><a href="#" class="contact-info__link">info@la-studioweb.com</a></span>
-                                    </li>
-                                    <li class="contact-info__item">
-                                        <i class="fa fa-map-marker"></i>
-                                        <span>PO Box 1622 Colins Street West Victoria 8077 Australia</span>
-                                    </li>
-                                </ul>
-                                <div class="textwidget">
-                                    <img src="assets/img/others/payments.png" alt="Payment">
-                                </div>
+        <footer class="footer footer-3 bg--white border-top">
+            <div class="container">
+                <div class="row pt--40 pt-md--30 mb--40 mb-sm--30">
+                    <div class="col-12 text-md-center">
+                        <div class="footer-widget">
+                            <div class="textwidget">
+                                <a href="index.html" class="footer-logo">
+                                    <img src="assets/img/logo/logo.svg" alt="Logo">
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="footer-middle pb--40 pb-md--30">
-                <div class="container">
-                    <div class="row method-box-wrapper">
-                        <div class="col-lg-3 col-md-6 mb-md--10">
-                            <div class="method-box">
-                                <h4>FREESHIPPING WORLD WIDE</h4>
-                                <p>Freeship over oder $100</p>
-                            </div>
+                <div class="row mb--15 mb-sm--20">
+                    <div class="col-xl-2 col-md-4 mb-lg--30">
+                        <div class="footer-widget">
+                            <h3 class="widget-title widget-title--2">Company</h3>
+                            <ul class="widget-menu widget-menu--2">
+                                <li><a href="about-us.html">About Us</a></li>
+                                <li><a href="#">Our Services</a></li>
+                                <li><a href="#">Affiliate Program</a></li>
+                                <li><a href="#">Work for Airi</a></li>
+                            </ul>
                         </div>
-                        <div class="col-lg-3 col-md-6 mb-md--10">
-                            <div class="method-box">
-                                <h4>30 DAYS MONEY BACK</h4>
-                                <p>You can back money any times</p>
-                            </div>
+                    </div>
+                    <div class="col-xl-2 col-md-4 mb-lg--30">
+                        <div class="footer-widget">
+                            <h3 class="widget-title widget-title--2">USEFUL LINKS</h3>
+                            <ul class="widget-menu widget-menu--2">
+                                <li><a href="shop-collections.html">The Collections</a></li>
+                                <li><a href="#">Size Guide</a></li>
+                                <li><a href="#">Return Policiy</a></li>
+                            </ul>
                         </div>
-                        <div class="col-lg-3 col-md-6 mb-sm--10">
-                            <div class="method-box">
-                                <h4>PROFESSIONAL SUPPORT 24/7</h4>
-                                <p>info@la-studioweb.com</p>
-                            </div>
+                    </div>
+                    <div class="col-xl-2 col-md-4 mb-lg--30">
+                        <div class="footer-widget">
+                            <h3 class="widget-title widget-title--2">SHOPPING</h3>
+                            <ul class="widget-menu widget-menu--2">
+                                <li><a href="shop-instagram.html">Look Book</a></li>
+                                <li><a href="shop-sidebar.html">Shop Sidebar</a></li>
+                                <li><a href="shop-fullwidth.html">Shop Fullwidth</a></li>
+                                <li><a href="shop-no-gutter.html">Man & Woman</a></li>
+                            </ul>
                         </div>
-                        <div class="col-lg-3 col-md-6">
-                            <div class="method-box">
-                                <h4>100% SECURE CHECKOUT</h4>
-                                <p>Protect buyer & clients</p>
+                    </div>
+                    <div class="col-xl-5 offset-xl-1 col-lg-6 offset-lg-3 col-md-8 offset-md-2">
+                        <div class="footer-widget">
+                            <h3 class="widget-title widget-title--2 widget-title--icon">Subscribe now and get 10% off new collection</h3>
+                            <form action="https://company.us19.list-manage.com/subscribe/post?u=2f2631cacbe4767192d339ef2&amp;id=24db23e68a" class="newsletter-form newsletter-form--3 mc-form" method="post" target="_blank">
+                                <input type="email" name="newsletter-email" id="newsletter-email" class="newsletter-form__input" placeholder="Enter Your Email Address..">
+                                <button type="submit" class="newsletter-form__submit">
+                                    <i class="dl-icon-right"></i>
+                                </button>
+                            </form>
+                            <!-- mailchimp-alerts Start -->
+                            <div class="mailchimp-alerts">
+                                <div class="mailchimp-submitting"></div><!-- mailchimp-submitting end -->
+                                <div class="mailchimp-success"></div><!-- mailchimp-success end -->
+                                <div class="mailchimp-error"></div><!-- mailchimp-error end -->
                             </div>
+                            <!-- mailchimp-alerts end -->
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="footer-bottom">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-12 text-center">
-                            <p class="copyright-text">&copy;2018 AIRI All rights reserved. Designed by HasTech</p>
-                        </div>
+                <div class="row align-items-center pt--10 pb--30">
+                    <div class="col-md-4">
+                        <!-- Social Icons Start Here -->
+                        <ul class="social social-small">
+                            <li class="social__item">
+                                <a href="twitter.com" class="social__link">
+                                <i class="fa fa-twitter"></i>
+                                </a>
+                            </li>
+                            <li class="social__item">
+                                <a href="plus.google.com" class="social__link">
+                                <i class="fa fa-google-plus"></i>
+                                </a>
+                            </li>
+                            <li class="social__item">
+                                <a href="facebook.com" class="social__link">
+                                <i class="fa fa-facebook"></i>
+                                </a>
+                            </li>
+                            <li class="social__item">
+                                <a href="youtube.com" class="social__link">
+                                <i class="fa fa-youtube"></i>
+                                </a>
+                            </li>
+                            <li class="social__item">
+                                <a href="instagram.com" class="social__link">
+                                <i class="fa fa-instagram"></i>
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- Social Icons End Here -->
+                    </div>
+                    <div class="col-md-4 text-md-center">
+                        <p class="copyright-text">&copy;2018 AIRI. Designed by HasTech</p>
+                    </div>
+                    <div class="col-md-4 text-md-right">
+                        <img src="assets/img/others/payments-2.png" alt="Payment">
                     </div>
                 </div>
             </div>
         </footer>
         <!-- Footer End -->
+
 
         <!-- Search from Start --> 
         <div class="searchform__popup" id="searchForm">
@@ -1922,7 +1836,7 @@
                                     <img src="assets/img/products/prod-17-1-70x91.jpg" alt="products">
                                 </div>
                                 <div class="mini-cart__product__content">
-                                    <a class="mini-cart__product__title" href="<?= BASE_URL . "chi-tiet/san-pham.php?id=" . $p['id'] ?>">Chain print bermuda shorts  </a>
+                                    <a class="mini-cart__product__title" href="product-details.html">Chain print bermuda shorts  </a>
                                     <span class="mini-cart__product__quantity">1 x $49.00</span>
                                 </div>
                             </li>
@@ -1934,7 +1848,7 @@
                                     <img src="assets/img/products/prod-18-1-70x91.jpg" alt="products">
                                 </div>
                                 <div class="mini-cart__product__content">
-                                    <a class="mini-cart__product__title" href="<?= BASE_URL . "chi-tiet/san-pham.php?id=" . $p['id'] ?>">Waxed-effect pleated skirt</a>
+                                    <a class="mini-cart__product__title" href="product-details.html">Waxed-effect pleated skirt</a>
                                     <span class="mini-cart__product__quantity">1 x $49.00</span>
                                 </div>
                             </li>
@@ -1946,7 +1860,7 @@
                                     <img src="assets/img/products/prod-19-1-70x91.jpg" alt="products">
                                 </div>
                                 <div class="mini-cart__product__content">
-                                    <a class="mini-cart__product__title" href="<?= BASE_URL . "chi-tiet/san-pham.php?id=" . $p['id'] ?>">Waxed-effect pleated skirt</a>
+                                    <a class="mini-cart__product__title" href="product-details.html">Waxed-effect pleated skirt</a>
                                     <span class="mini-cart__product__quantity">1 x $49.00</span>
                                 </div>
                             </li>
@@ -1958,7 +1872,7 @@
                                     <img src="assets/img/products/prod-2-1-70x91.jpg" alt="products">
                                 </div>
                                 <div class="mini-cart__product__content">
-                                    <a class="mini-cart__product__title" href="<?= BASE_URL . "chi-tiet/san-pham.php?id=" . $p['id'] ?>">Waxed-effect pleated skirt</a>
+                                    <a class="mini-cart__product__title" href="product-details.html">Waxed-effect pleated skirt</a>
                                     <span class="mini-cart__product__quantity">1 x $49.00</span>
                                 </div>
                             </li>
@@ -2002,7 +1916,7 @@
                         >
                             <div class="product-image">
                                 <div class="product-image--holder">
-                                    <a href="<?= BASE_URL . "chi-tiet/san-pham.php?id=" . $p['id'] ?>">
+                                    <a href="product-details.html">
                                         <img src="assets/img/products/prod-9-1.jpg" alt="Product Image" class="primary-image">
                                     </a>
                                 </div>
@@ -2010,7 +1924,7 @@
                             </div>
                             <div class="product-image">
                                 <div class="product-image--holder">
-                                    <a href="<?= BASE_URL . "chi-tiet/san-pham.php?id=" . $p['id'] ?>">
+                                    <a href="product-details.html">
                                         <img src="assets/img/products/prod-10-1.jpg" alt="Product Image" class="primary-image">
                                     </a>
                                 </div>
@@ -2018,7 +1932,7 @@
                             </div>
                             <div class="product-image">
                                 <div class="product-image--holder">
-                                    <a href="<?= BASE_URL . "chi-tiet/san-pham.php?id=" . $p['id'] ?>">
+                                    <a href="product-details.html">
                                         <img src="assets/img/products/prod-11-1.jpg" alt="Product Image" class="primary-image">
                                     </a>
                                 </div>
@@ -2039,7 +1953,9 @@
                                     <span class="money">$60.00</span>
                                 </span>
                             </span>
-                            <p class="product-short-description mb--25 mb-md--20">Donec accumsan auctor iaculis. Sed suscipit arcu ligula, at egestas magna molestie a. Proin ac ex maximus, ultrices justo eget, sodales orci. Aliquam egestas libero ac turpis pharetra, in vehicula lacus scelerisque. Vestibulum ut sem laoreet, feugiat tellus at, hendrerit arcu.</p>
+                            <p class="product-short-description mb--25 mb-md--20">
+                                <?= $product['short_desc']?>
+                            </p>
                             <div class="product-action d-flex flex-row align-items-center mb--30 mb-md--20">
                                 <div class="quantity">
                                     <input type="number" class="quantity-input" name="qty" id="quick-qty" value="1" min="1">
@@ -2057,7 +1973,7 @@
                             <div class="product-summary-footer d-flex justify-content-between flex-sm-row flex-column flex-sm-row flex-column">
                                 <div class="product-meta">
                                     <span class="sku_wrapper font-size-12">SKU: <span class="sku">REF. LA-887</span></span>
-                                    <span class="posted_in font-size-12">Categories: <a href="<?= BASE_URL . "danh-muc/danh-sach-sp.php?id=" . $c['id'] ?>" rel="tag">Fashions</a></span>
+                                    <span class="posted_in font-size-12">Categories: <a href="shop-sidebar.html" rel="tag">Fashions</a></span>
                                 </div>
                                 <div class="product-share-box">
                                     <span class="font-size-12">Share With</span>
@@ -2095,17 +2011,17 @@
           </div>
         </div>
         <!-- Modal End -->
- 
+
 
 
     </div>
     <!-- Main Wrapper End -->
 
 
-    <!-- ************************* JS Files ************************* -->
-<?php include_once "./layouts/script.php"; ?>
+    <?php include_once "../layouts/script.php"; ?>
+    
 </body>
 
 
-<!-- Mirrored from demo.hasthemes.com/airi-v6/airi/index-02.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 03 Jan 2019 12:10:09 GMT -->
+<!-- Mirrored from demo.hasthemes.com/airi-v6/airi/product-details.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 03 Jan 2019 12:18:34 GMT -->
 </html>
