@@ -1,5 +1,5 @@
 <?php
-require_once "./helpers/db.php";
+require_once "../helpers/db.php";
 session_start();
 
 // Thu thập data từ form
@@ -9,9 +9,10 @@ $password = $_POST['password'];
 // Dựa vào email để lấy ra tài khoản trong csdl
 $sqlQuery = "select * from users where email = '$email'";
 $user = executeQuery($sqlQuery, false);
+// var_dump($sqlQuery);die;
 // So sánh 2 mật khẩu (mk từ form và mk trong db)
 if(!$user || !password_verify($password, $user['password'])){
-    header('location: ./login.php?msg=Sai thông tin tài khoản');
+    header('location: ./cp-login.php?msg=Sai thông tin tài khoản');
     die;
 }
 
@@ -23,7 +24,7 @@ if($user['role'] == 1){
     die;
 }
 
-header('location: ./admin/index.php');
+header('location: ../admin/index.php');
 
 
 
