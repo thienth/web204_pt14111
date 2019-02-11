@@ -79,7 +79,7 @@ $cates = executeQuery($sqlQuery, true);
                         <th>Ảnh </th>
                         <th>Số lượng sp </th>
                         <th>
-                            <a href="javascript:;" class="btn btn-xs btn-primary">Thêm</a>
+                            <a href="<?= ADMIN_URL . 'danh-muc/add.php' ?>" class="btn btn-xs btn-primary">Thêm</a>
                         </th>
                     </tr>
                     <?php foreach($cates as $key => $c):?>
@@ -92,7 +92,7 @@ $cates = executeQuery($sqlQuery, true);
                         <td><?= $c['total_product']?></td>
                         <td>
                             <a href="javascript:;" class="btn btn-xs btn-info">Sửa</a>
-                            <a href="javascript:;" class="btn btn-xs btn-danger">Xóa</a>
+                            <a href="javascript:;" url="<?= ADMIN_URL . 'danh-muc/xoa.php?id=' . $c['id'] ?>" class="btn btn-remove btn-xs btn-danger">Xóa</a>
                         </td>
                     </tr>
                     <?php endforeach?>
@@ -114,5 +114,22 @@ $cates = executeQuery($sqlQuery, true);
 <!-- ./wrapper -->
 
 <?php include_once "../layouts/script.php" ?>
+<script>
+    $('.btn-remove').click(function(){
+        var hrefUrl = $(this).attr('url');
+        swal({
+            title: "Thông báo!",
+            text: "Bạn có chắc chắn muốn xóa danh mục này?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then(function(willDelete){
+            if(willDelete === true){
+                window.location.href = hrefUrl;
+            }
+        });
+    });
+
+</script>
 </body>
 </html>
