@@ -91,7 +91,7 @@ $cates = executeQuery($sqlQuery, true);
                         </td>
                         <td><?= $c['total_product']?></td>
                         <td>
-                            <a href="javascript:;" class="btn btn-xs btn-info">Sửa</a>
+                            <a href="<?= ADMIN_URL . 'danh-muc/edit.php?id=' . $c['id']?>" class="btn btn-xs btn-info">Sửa</a>
                             <a href="javascript:;" url="<?= ADMIN_URL . 'danh-muc/xoa.php?id=' . $c['id'] ?>" class="btn btn-remove btn-xs btn-danger">Xóa</a>
                         </td>
                     </tr>
